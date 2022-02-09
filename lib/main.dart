@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
 
-void main() => runApp(const MyApp());
+void main() {
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -9,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      title: "Startup Namer",
+      title: 'Startup Name Generator',
       home: RandomWords(),
     );
   }
@@ -24,12 +26,13 @@ class RandomWords extends StatefulWidget {
 
 class _RandomWordsState extends State<RandomWords> {
   final _suggestions = <WordPair>[];
+  final _saved = <WordPair>[];
   final _biggerFont = const TextStyle(fontSize: 18);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Startup Namer"),
+        title: const Text('Startup Name Generator'),
       ),
       body: _buildSuggestions(),
     );
@@ -52,11 +55,28 @@ class _RandomWordsState extends State<RandomWords> {
   }
 
   Widget _buildRow(WordPair pair) {
-    return ListTile(
+    final isSaved = _saved.contains(pair);
+    return (ListTile(
       title: Text(
         pair.asPascalCase,
         style: _biggerFont,
       ),
-    );
+      trailing: Icon(
+        isSaved ? Icons.favorite : Icons.favorite_border,
+        color: isSaved ? Colors.red : null,
+        semanticLabel: isSaved ? 'Remove from saved' : 'Save',
+      ),
+      onTap: () {
+        setState(() {
+          if (isSaved) {
+            _saved.remove(pair);
+          } else {
+            _saved.add(pair);
+          }
+        });
+      },
+      selected: isSaved,
+      selectedColor: Colors.blue,
+    ));
   }
 }
